@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -51,22 +49,13 @@ public class JavassistHelper {
 
     private static final String    STRING             = "java.lang.String";
 
-    private static final int       INITIAL_CAPACITY   = 500;
 
-    private LinkedHashMap          lruCache           = null;
 
-    private ReadWriteLock          lock               = new ReentrantReadWriteLock();
 
     private static JavassistHelper instance           = new JavassistHelper();
 
     private JavassistHelper() {
 
-        lruCache = new LinkedHashMap(INITIAL_CAPACITY + 1, 0.75f, true) {
-
-            public boolean removeEldestEntry(Map.Entry eldest) {
-                return size() > INITIAL_CAPACITY;
-            }
-        };
     }
 
     public static JavassistHelper getInstance() {
@@ -81,38 +70,39 @@ public class JavassistHelper {
         Class runClass = ClassUtils.getClass(taskVO.getRunClass());
         String newClazzName = NEW_CLAZZ_NAME + runClass.getSimpleName();
 
-        Class resultClazz = null;
+        Class resultClazz = loadClazz(taskVO, newClazzName);
+
 
         // TODO 读写锁改分离锁
-        lock.readLock().lock();
+//        lock.readLock().lock();
         try {
 
-            resultClazz = (Class) lruCache.get(newClazzName);
+//            resultClazz = (Class) lruCache.get(newClazzName);
             if (resultClazz == null) {
 
-                lock.readLock().unlock();
-                lock.writeLock().lock();
+//                lock.readLock().unlock();
+//                lock.writeLock().lock();
                 try {
 
                     if (resultClazz == null) {
-                        resultClazz = loadClazz(taskVO, newClazzName);
-                        lruCache.put(newClazzName, resultClazz);
+
+//                        lruCache.put(newClazzName, resultClazz);
                     }
 
                 } finally {
-                    lock.readLock().lock();
-                    lock.writeLock().unlock();
+//                    lock.readLock().lock();
+//                    lock.writeLock().unlock();
                 }
 
             }
         } finally {
-            lock.readLock().unlock();
+//            lock.readLock().unlock();
         }
 
         return resultClazz;
     }
 
-    private Class loadClazz(TaskVO taskVO, String newClazzName) throws NotFoundException, CannotCompileException,
+    public Class loadClazz(TaskVO taskVO, String newClazzName) throws NotFoundException, CannotCompileException,
                                                                IOException {
         ClassPool classPool = ClassPool.getDefault();
 

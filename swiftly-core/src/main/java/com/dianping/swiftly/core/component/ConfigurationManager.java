@@ -1,8 +1,12 @@
 package com.dianping.swiftly.core.component;
 
+import com.dianping.swiftly.api.vo.TaskVO;
 import org.springframework.util.Assert;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * <pre>
@@ -20,13 +24,23 @@ public class ConfigurationManager {
 
     private static ConfigurationManager instance              = new ConfigurationManager();
 
-    private ConcurrentHashMap           map                   = new ConcurrentHashMap();
+    private LinkedHashMap               lruCache              = null;
+
+    private static final int            INITIAL_CAPACITY      = 500;
+
+    private SwiftlyClassLoader          swiftlyClassLoader;
+
+    private ReadWriteLock               lock                  = new ReentrantReadWriteLock();
 
     private ConfigurationManager() {
 
-    }
+        lruCache = new LinkedHashMap(INITIAL_CAPACITY + 1, 0.75f, true) {
 
-    private SwiftlyClassLoader swiftlyClassLoader;
+            public boolean removeEldestEntry(Map.Entry eldest) {
+                return size() > INITIAL_CAPACITY;
+            }
+        };
+    }
 
     public static ConfigurationManager getInstance() {
         return instance;
@@ -36,20 +50,44 @@ public class ConfigurationManager {
         ConfigurationManager.defaultRepositoryPath = defaultRepositoryPath;
     }
 
-    public Class loadClass(String clazzName) throws Exception {
+    public Class loadClass(TaskVO taskVO) throws Exception {
 
         if (swiftlyClassLoader == null) {
             swiftlyClassLoader = (SwiftlyClassLoader) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoader.class);
         }
 
-        Class clazz = (Class) map.get(clazzName);
-        if (clazz == null) {
-            clazz = swiftlyClassLoader.loadClass(clazzName);
-            Class newClazz = (Class) map.putIfAbsent(clazzName, clazz);
-            if (newClazz != null) {
-                clazz = newClazz;
+        Class clazz = null;
+        lock.readLock().lock();
+        try {
+
+            clazz = (Class) lruCache.get(taskVO.getRunClass());
+            if (clazz == null) {
+                lock.readLock().unlock();
+                lock.writeLock().lock();
+                try {
+
+                    if (clazz == null) {
+                        clazz = JavassistHelper.getInstance().createClass(taskVO);
+                        lruCache.put(taskVO.getRunClass(), clazz);
+                    }
+
+                } finally {
+                    lock.readLock().lock();
+                    lock.writeLock().unlock();
+                }
             }
+
+        } finally {
+            lock.readLock().unlock();
         }
+
+        // if (clazz == null) {
+        // clazz = swiftlyClassLoader.loadClass(clazzName);
+        // Class newClazz = (Class) lruCache.putIfAbsent(clazzName, clazz);
+        // if (newClazz != null) {
+        // clazz = newClazz;
+        // }
+        // }
 
         return clazz;
     }
