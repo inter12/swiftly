@@ -1,7 +1,7 @@
 package com.dianping.swiftly.webapp.resources;
 
 import com.dianping.swiftly.utils.component.AssertExtended;
-import com.dianping.swiftly.webapp.VO.JobLogVO;
+import com.dianping.swiftly.webapp.vo.JobLogVO;
 import com.dianping.swiftly.api.vo.TaskVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
