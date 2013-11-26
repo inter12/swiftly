@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dianping.swiftly.core.Repository.MySqlJobRepository">
+
+    <resultMap type="JobEntity" id="jobEntityResultMap">
+        <result property="id" column="ID"/>
+        <result property="owner" column="OWNER"/>
+        <result property="deployMachineIP" column="DeployMachineIP"/>
+        <result property="type" column="TYPE"/>
+        <result property="name" column="Name"/>
+        <result property="runClass" column="RunClass"/>
+        <result property="runMethod" column="RunMethod"/>
+        <result property="runParameter" column="RunParameter"/>
+        <result property="runTrigger" column="RunTrigger"/>
+        <result property="jobDesc" column="JOBDESC"/>
+        <result property="maxRunTime" column="MaxRunTime"/>
+        <result property="maxWaitingTime" column="MaxWaitingTime"/>
+        <result property="retryTimes" column="RetryTimes"/>
+        <result property="isKilledTimeout" column="IsKilledTimeout"/>
+        <result property="status" column="Status"/>
+        <result property="jobGroup" column="JobGroup"/>
+        <result property="noticeEmail" column="NoticeEmail"/>
+    </resultMap>
+
+    <select id="loadAllEntities" resultMap="jobEntityResultMap">    <!-- 查询表中的所有用户 -->
+        SELECT
+        ID,
+        OWNER,
+        DeployMachineIP,
+        TYPE,
+        NAME,
+        RunClass,
+        RunMethod,
+        RunParameter,
+        RUNTRIGGER,
+        JOBDESC,
+        MaxRunTime,
+        MaxWaitingTime,
+        RetryTimes,
+        IsKilledTimeout,
+        STATUS,
+        JOBGROUP,
+        NoticeEmail
+        FROM GP_SwiftlyJob
+        WHERE STATUS != 5
+    </select>
+
+</mapper>
