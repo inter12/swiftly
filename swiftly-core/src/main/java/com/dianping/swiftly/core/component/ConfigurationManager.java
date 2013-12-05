@@ -1,7 +1,7 @@
 package com.dianping.swiftly.core.component;
 
 import com.dianping.swiftly.api.vo.TaskVO;
-import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class ConfigurationManager {
 
     // 默认的仓库路径
-    public static String                defaultRepositoryPath = "/data/appdata";
+    public static String                defaultRepositoryPath = "/data/appdata/";
 
     private static ConfigurationManager instance              = new ConfigurationManager();
 
@@ -28,7 +28,7 @@ public class ConfigurationManager {
 
     private static final int            INITIAL_CAPACITY      = 500;
 
-    private SwiftlyClassLoader          swiftlyClassLoader;
+    // private SwiftlyClassLoader swiftlyClassLoader;
 
     private ReadWriteLock               lock                  = new ReentrantReadWriteLock();
 
@@ -52,9 +52,10 @@ public class ConfigurationManager {
 
     public Class loadClass(TaskVO taskVO) throws Exception {
 
-        if (swiftlyClassLoader == null) {
-            swiftlyClassLoader = (SwiftlyClassLoader) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoader.class);
-        }
+        // if (swiftlyClassLoader == null) {
+        // swiftlyClassLoader = (SwiftlyClassLoader)
+        // ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+        // }
 
         Class clazz = null;
         lock.readLock().lock();
@@ -67,7 +68,9 @@ public class ConfigurationManager {
                 try {
 
                     if (clazz == null) {
-                        clazz = JavassistHelper.getInstance().createClass(taskVO);
+                        ClassLoaderFactory.addClassPath();
+                        clazz = ClassUtils.forName(taskVO.getRunClass(), Thread.currentThread().getContextClassLoader());
+                        // clazz = swiftlyClassLoader.loadClass(taskVO.getRunClass());
                         lruCache.put(taskVO.getRunClass(), clazz);
                     }
 
@@ -92,15 +95,15 @@ public class ConfigurationManager {
         return clazz;
     }
 
-    public void setSwiftlyClassLoader(SwiftlyClassLoader swiftlyClassLoader) {
-        this.swiftlyClassLoader = swiftlyClassLoader;
-    }
-
-    public void setConfigLocation(String rootDir) {
-
-        Assert.notNull(swiftlyClassLoader, "swiftlyClassLoader is null!");
-        swiftlyClassLoader.setRootDir(rootDir);
-    }
+    // public void setSwiftlyClassLoader(SwiftlyClassLoader swiftlyClassLoader) {
+    // this.swiftlyClassLoader = swiftlyClassLoader;
+    // }
+    //
+    // public void setConfigLocation(String rootDir) {
+    //
+    // Assert.notNull(swiftlyClassLoader, "swiftlyClassLoader is null!");
+    // swiftlyClassLoader.setRootDir(rootDir);
+    // }
 
     public void reFreshRepositoryPath() {
         // TODO 重新设置地址后，加载

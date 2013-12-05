@@ -8,6 +8,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import com.dianping.swiftly.core.component.ApplicationContext;
+import com.dianping.swiftly.core.component.RepositoryLocator;
 import com.dianping.swiftly.core.domain.JobDomain;
 import com.dianping.swiftly.utils.component.AssertExtended;
 
@@ -34,6 +35,7 @@ public class SwiftlyJobOperation implements InitializingBean {
         Assert.notNull(scheduler, "scheduler not init!");
 
         JobDomain jobDomain = new JobDomain(jobId);
+        JobDomain.setJobRepository(RepositoryLocator.getJobRepository());
         jobDomain.assemblyVO();
         JobKey jobkey = jobDomain.getJobkey();
         boolean isExisted = scheduler.checkExists(jobkey);

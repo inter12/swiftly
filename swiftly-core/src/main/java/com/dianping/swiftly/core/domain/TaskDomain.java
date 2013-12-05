@@ -27,11 +27,11 @@ import java.util.List;
  */
 public class TaskDomain {
 
-    private static MySqlJobRepository jobRepository = RepositoryLocator.getJobRepository();
+    private static MySqlJobRepository jobRepository;
 
-    private static Logger        LOGGER        = LoggerFactory.getLogger(JobDomain.class);
+    private static Logger             LOGGER = LoggerFactory.getLogger(JobDomain.class);
 
-    private Scheduler            scheduler;
+    private Scheduler                 scheduler;
 
     public TaskDomain(Scheduler scheduler) {
         this.scheduler = scheduler;
@@ -68,6 +68,7 @@ public class TaskDomain {
         for (TaskVO taskVO : taskVOList) {
 
             JobDomain jobDomain = new JobDomain(taskVO);
+            JobDomain.setJobRepository(RepositoryLocator.getJobRepository());
 
             try {
                 JobInfoVO jobInfoVO = jobDomain.assemblyVO();
@@ -81,4 +82,7 @@ public class TaskDomain {
 
     }
 
+    public static void setJobRepository(MySqlJobRepository jobRepository) {
+        TaskDomain.jobRepository = jobRepository;
+    }
 }

@@ -1,5 +1,8 @@
 package com.dianping.swiftly.core.domain;
 
+import com.dianping.swiftly.core.component.ApplicationContext;
+import com.dianping.swiftly.core.component.FileSystemClassLoaderProxy;
+import com.dianping.swiftly.core.component.SwiftlyClassLoader;
 import javassist.*;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
@@ -10,6 +13,7 @@ import org.springframework.util.Assert;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -45,12 +49,29 @@ public class MethodInvokingJob implements Job {
 
         LOGGER = LoggerFactory.getLogger(MethodInvokingJob.class);
 
-        LOGGER.debug("targetClassName:" + targetClassName);
-        LOGGER.debug("targetMethod:" + targetMethod);
-        LOGGER.debug("targetParameter:" + targetParameter);
+        LOGGER.info("targetClassName:" + targetClassName);
+        LOGGER.info("targetMethod:" + targetMethod);
+        LOGGER.info("targetParameter:" + targetParameter);
 
         try {
-            Class targetClass = Class.forName(targetClassName);
+
+            Class targetClass = null;
+            try {
+                targetClass = Class.forName(targetClassName);
+            } catch (ClassNotFoundException e) {
+
+                LOGGER.warn("load class from local classpath error! , try to load from default path /data/appdata");
+
+                Collection<Object> values = ApplicationContext.getInstance().values();
+                LOGGER.info("start init!--------------");
+                for (Object value : values) {
+                    LOGGER.info(value.toString());
+                }
+                LOGGER.info("end init!--------------");
+
+                SwiftlyClassLoader classLoader = (SwiftlyClassLoader) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+                targetClass = classLoader.loadClass(targetClassName);
+            }
             Assert.notNull(targetClass, "can not find clazzName!");
 
             Class[] objectClazzs = null;
@@ -71,6 +92,13 @@ public class MethodInvokingJob implements Job {
             }
 
             Method method;
+
+            Method[] declaredMethods = targetClass.getDeclaredMethods();
+            LOGGER.info("----------- start method ------------");
+            for (Method declaredMethod : declaredMethods) {
+                LOGGER.info(declaredMethod.getName());
+            }
+            LOGGER.info("----------- end method ------------");
 
             if (objectClazzs == null) {
                 method = targetClass.getDeclaredMethod(targetMethod);

@@ -2,8 +2,10 @@ package com.dianping.swiftly.core;
 
 import com.dianping.swiftly.core.component.ApplicationContext;
 import com.dianping.swiftly.core.component.ConfigurationManager;
+import com.dianping.swiftly.core.component.RepositoryLocator;
 import com.dianping.swiftly.core.domain.TaskDomain;
 import com.dianping.swiftly.utils.component.LoggerHelper;
+import com.dianping.swiftly.utils.component.SpringHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
@@ -12,7 +14,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import java.util.Calendar;
@@ -32,7 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *  @see:SchedulerFactoryBean
  * </pre>
  */
-public class SwiftlyScheduling implements InitializingBean {
+public class SwiftlyScheduling {
 
     private static Logger            LOGGER   = LoggerFactory.getLogger(SwiftlyScheduling.class);
 
@@ -76,7 +77,7 @@ public class SwiftlyScheduling implements InitializingBean {
 
     private ConfigurationManager              configurationManger;
 
-    private boolean                           exposeSchedulerInRepository = false;
+    private boolean                           exposeSchedulerInRepository = true;
 
     // 全局的上下文环境
     private ApplicationContext                applicationContext;
@@ -93,6 +94,7 @@ public class SwiftlyScheduling implements InitializingBean {
     private void addTask() {
 
         TaskDomain taskDomain = new TaskDomain(scheduler);
+        TaskDomain.setJobRepository(RepositoryLocator.getJobRepository());
         taskDomain.initScheduler();
     }
 
@@ -262,6 +264,10 @@ public class SwiftlyScheduling implements InitializingBean {
 
         LoggerHelper.initLog();
 
+        String[] path = { "classpath*:/config/spring/spring-*.xml" };
+        org.springframework.context.ApplicationContext applicationContext1 = SpringHelper.loadSpringConfig(path);
+        RepositoryLocator.setApplicationContext(applicationContext1);
+
         SwiftlyScheduling scheduling = SwiftlyScheduling.getInstance();
         scheduling.afterPropertiesSet();
 
@@ -278,7 +284,6 @@ public class SwiftlyScheduling implements InitializingBean {
         }
     }
 
-    @Override
     public void afterPropertiesSet() throws Exception {
         if (!isInit) {
 

@@ -1,11 +1,11 @@
 package com.dianping.swiftly.core.component;
 
-import com.dianping.swiftly.core.LifeCycle;
 import com.dianping.swiftly.core.SwiftlyScheduling;
 import com.dianping.swiftly.core.TaskMonitor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *  单例
  * </pre>
  */
-public class ApplicationContext implements LifeCycle {
+public class ApplicationContext {
 
     private static ApplicationContext instance  = new ApplicationContext();
 
@@ -44,13 +44,8 @@ public class ApplicationContext implements LifeCycle {
             if (cacheObject != null) {
                 object = cacheObject;
             }
-            return object;
         }
-
-        throw new IllegalStateException(
-                                        "clazz is not in anything classLoader or has not default construction ,please check! clazz name :"
-                                                + clazz.getName());
-
+        return object;
     }
 
     public Object getObject(String key) {
@@ -85,17 +80,23 @@ public class ApplicationContext implements LifeCycle {
         map.put(ConfigurationManager.class.toString(), cm);
     }
 
-    @Override
-    public void init() throws Exception {
-
-    }
-
-    @Override
     public void destroy() throws Exception {
         if (map.size() == 0) {
             return;
         }
 
         map.clear();
+    }
+
+    public static void main(String[] args) throws Exception {
+        FileSystemClassLoaderProxy objectByClazz = (FileSystemClassLoaderProxy) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+        Class aClass = objectByClazz.loadClass("com.dianping.angelica.utils.JobTest");
+
+        FileSystemClassLoaderProxy ew = (FileSystemClassLoaderProxy) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+
+    }
+
+    public Collection<Object> values() {
+        return map.values();
     }
 }

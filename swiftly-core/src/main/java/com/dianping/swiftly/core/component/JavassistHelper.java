@@ -4,20 +4,18 @@ import com.dianping.swiftly.api.vo.TaskVO;
 import com.dianping.swiftly.core.domain.MethodInvokingJob;
 import com.dianping.swiftly.utils.component.LoggerHelper;
 import javassist.*;
-import org.apache.commons.lang.ClassUtils;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * <pre>
@@ -30,7 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class JavassistHelper {
 
-    private Logger                 logger             = LoggerFactory.getLogger(JavassistHelper.class);
+    private static Logger          logger             = LoggerFactory.getLogger(JavassistHelper.class);
 
     private static String          NEW_CLAZZ_NAME     = "com.dianping.swiftly.core.domain.MethodInvokingJob$";
     private static final String    OLD_CLAZZ_NAME     = "com.dianping.swiftly.core.domain.MethodInvokingJob";
@@ -49,13 +47,14 @@ public class JavassistHelper {
 
     private static final String    STRING             = "java.lang.String";
 
-
-
+    public static final String     NEW_CLAZZ_DIR      = "/data/appdata/new_clazz";
 
     private static JavassistHelper instance           = new JavassistHelper();
 
     private JavassistHelper() {
 
+        File file = new File(NEW_CLAZZ_DIR);
+        file.mkdir();
     }
 
     public static JavassistHelper getInstance() {
@@ -67,43 +66,14 @@ public class JavassistHelper {
         Assert.notNull(taskVO, "target Clazz should not be null or empty!");
         Assert.notNull(taskVO.getRunClass(), "runClazz should not be null or empty!");
 
-        Class runClass = ClassUtils.getClass(taskVO.getRunClass());
+        Class runClass = ConfigurationManager.getInstance().loadClass(taskVO);
         String newClazzName = NEW_CLAZZ_NAME + runClass.getSimpleName();
-
         Class resultClazz = loadClazz(taskVO, newClazzName);
-
-
-        // TODO 读写锁改分离锁
-//        lock.readLock().lock();
-        try {
-
-//            resultClazz = (Class) lruCache.get(newClazzName);
-            if (resultClazz == null) {
-
-//                lock.readLock().unlock();
-//                lock.writeLock().lock();
-                try {
-
-                    if (resultClazz == null) {
-
-//                        lruCache.put(newClazzName, resultClazz);
-                    }
-
-                } finally {
-//                    lock.readLock().lock();
-//                    lock.writeLock().unlock();
-                }
-
-            }
-        } finally {
-//            lock.readLock().unlock();
-        }
-
         return resultClazz;
     }
 
     public Class loadClazz(TaskVO taskVO, String newClazzName) throws NotFoundException, CannotCompileException,
-                                                               IOException {
+                                                              IOException {
         ClassPool classPool = ClassPool.getDefault();
 
         CtClass newClazz = classPool.makeClass(newClazzName);
@@ -140,7 +110,7 @@ public class JavassistHelper {
         loggerField.setModifiers(Modifier.PRIVATE);
 
         newClazz.addField(loggerField);
-        newClazz.writeFile();
+        newClazz.writeFile(NEW_CLAZZ_DIR);
 
         return newClazz.toClass();
     }
@@ -171,8 +141,6 @@ public class JavassistHelper {
         Field declaredField = aClass.getDeclaredField(LOGGER_FIELD);
         String name = declaredField.getName();
         System.out.println(name);
-        // Class<? extends Field> aClass1 = declaredField.getClass();
-        // System.out.println(aClass1.toString());
 
     }
 
@@ -182,29 +150,53 @@ public class JavassistHelper {
 
         LoggerHelper.initLog();
 
+        System.out.println(System.getProperty("sun.boot.class.path"));
+        System.out.println(System.getProperty("java.ext.dirs"));
+        System.out.println(System.getProperty("java.class.path"));
+
+
         JavassistHelper helper = JavassistHelper.getInstance();
         // helper.synTest("haha");
         // helper.synTest("hehe");
 
         TaskVO vo = new TaskVO();
-        vo.setRunClass("com.dianping.swiftly.core.BO.TaskBO");
-        vo.setRunMethod("sayHello");
-        vo.setRunParameter("zhaoming");
+        vo.setRunClass("com.dianping.activity.remindnote.root.Root");
+        vo.setRunMethod("init");
+        vo.setRunParameter("");
+
+//        vo.setRunClass("com.dianping.activityjob.thirdparty.xishiqu.XishiquBaseSynHandler");
+//        vo.setRunMethod("handler");
+//        vo.setRunParameter("");
+        // vo.setRunClass("com.dianping.activityjob.thirdparty.xishiqu.XishiquTicketSynHandler");
 
         Class<?> aClass = helper.createClass(vo);
+        System.out.println(aClass.getName());
+        logger.info("class name :" + aClass.getName());
 
-        Field declaredField = aClass.getDeclaredField(LOGGER_FIELD);
-        System.out.println(declaredField.getName());
+        // Field[] declaredFields = aClass.getDeclaredFields();
+        // for (Field declaredField : declaredFields) {
+        // System.out.println(declaredField.getName());
+        // }
+        //
+        // Method[] declaredMethods = aClass.getDeclaredMethods();
+        // for (Method declaredMethod : declaredMethods) {
+        // System.out.println(declaredMethod.getName());
+        // }
 
-        Method method = aClass.getDeclaredMethod("execute", JobExecutionContext.class);
-
-        Object o = aClass.newInstance();
-        method.invoke(o, new MethodInvokingJob.TTest());
+        invoke(aClass);
 
         // testN();
 
         // testY();
 
+    }
+
+    private static void invoke(Class<?> aClass) throws NoSuchMethodException, InstantiationException,
+                                               IllegalAccessException, InvocationTargetException {
+        Method method = aClass.getDeclaredMethod("execute", JobExecutionContext.class);
+
+        Object o = aClass.newInstance();
+        method.invoke(o, new MethodInvokingJob.TTest());
     }
 
     public static void testY() throws CannotCompileException, NotFoundException, IllegalAccessException,

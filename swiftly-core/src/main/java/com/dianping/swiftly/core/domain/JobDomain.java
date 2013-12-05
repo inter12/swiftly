@@ -5,7 +5,6 @@ import com.dianping.swiftly.core.BO.ObjectCopier;
 import com.dianping.swiftly.core.Entity.JobEntity;
 import com.dianping.swiftly.core.Repository.MySqlJobRepository;
 import com.dianping.swiftly.core.component.JavassistHelper;
-import com.dianping.swiftly.core.component.RepositoryLocator;
 import com.dianping.swiftly.core.component.SwiftlySchedulerException;
 import com.dianping.swiftly.core.vo.JobInfoVO;
 import org.quartz.*;
@@ -31,21 +30,21 @@ import java.text.ParseException;
  */
 public class JobDomain {
 
-    private static Logger        LOGGER        = LoggerFactory.getLogger(JobDomain.class);
+    private static Logger             LOGGER = LoggerFactory.getLogger(JobDomain.class);
 
-    private static MySqlJobRepository jobRepository = RepositoryLocator.getJobRepository();
+    private static MySqlJobRepository jobRepository;
 
-    private static Class<?>      jobDetailImplClass;
+    private static Class<?>           jobDetailImplClass;
 
-    private static Class<?>      triggerImplClass;
+    private static Class<?>           triggerImplClass;
 
-    private int                  jobId;
+    private int                       jobId;
 
-    private TaskVO               taskVO;
+    private TaskVO                    taskVO;
 
-    private JobDetail            jobDetail;
+    private JobDetail                 jobDetail;
 
-    private CronTriggerImpl      trigger;
+    private CronTriggerImpl           trigger;
 
     public JobDomain() {
     }
@@ -181,5 +180,9 @@ public class JobDomain {
         Assert.notNull(jobDetail);
 
         return jobDetail.getKey();
+    }
+
+    public static void setJobRepository(MySqlJobRepository jobRepository) {
+        JobDomain.jobRepository = jobRepository;
     }
 }

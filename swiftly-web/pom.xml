@@ -10,11 +10,10 @@
     </parent>
 
     <groupId>com.dianping.swiftly</groupId>
-    <artifactId>swiftly-agent</artifactId>
+    <artifactId>swiftly-web</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>swiftly-agent</name>
-    <description>客户端的代理</description>
+    <name>swiftly-web</name>
 
     <properties>
         <env>dev</env>
@@ -22,6 +21,25 @@
     </properties>
 
     <dependencies>
+
+        <!-- self -->
+        <dependency>
+            <groupId>com.dianping.swiftly</groupId>
+            <artifactId>swiftly-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dianping.swiftly</groupId>
+            <artifactId>swiftly-communication</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dianping.swiftly</groupId>
+            <artifactId>swiftly-extend</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -76,31 +94,6 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-        <!-- self -->
-        <dependency>
-            <groupId>com.dianping.swiftly</groupId>
-            <artifactId>swiftly-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.dianping.swiftly</groupId>
-            <artifactId>swiftly-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.dianping.swiftly</groupId>
-            <artifactId>swiftly-communication</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.dianping.swiftly</groupId>
-            <artifactId>swiftly-extend</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
 
     </dependencies>
 
@@ -112,7 +105,6 @@
         </repository>
     </repositories>
 
-
     <build>
 
         <resources>
@@ -122,7 +114,7 @@
             </resource>
         </resources>
 
-        <finalName>swiftly-agent</finalName>
+        <finalName>swiftly-web</finalName>
         <plugins>
 
             <plugin>

@@ -39,4 +39,7 @@ public class SpringObjLocator {
         return applicationContext;
     }
 
+    public static void setApplicationContext(ApplicationContext applicationContext) {
+        SpringObjLocator.applicationContext = applicationContext;
+    }
 }

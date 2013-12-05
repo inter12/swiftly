@@ -17,4 +17,7 @@
     <bean id="swiftlyTaskManager" class="com.dianping.swiftly.core.SwiftlyTaskManager"/>
 
 
+    <!--<bean id="jobRepository" class="com.dianping.swiftly.core.Repository.MySqlJobRepository"/>-->
+
+
 </beans>

@@ -68,7 +68,6 @@
             <version>1.1.0</version>
         </dependency>
 
-
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
@@ -86,7 +85,6 @@
             <artifactId>guava</artifactId>
         </dependency>
 
-
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -102,11 +100,16 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
+        <!--<dependency>-->
+            <!--<groupId>commons-logging</groupId>-->
+            <!--<artifactId>commons-logging</artifactId>-->
+            <!--<version>1.1.2</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
-
 
         <dependency>
             <groupId>junit</groupId>
@@ -144,26 +147,68 @@
 
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>springsource-milestones</id>
-            <name>SpringSource Milestones Proxy</name>
-            <url>https://oss.sonatype.org/content/repositories/springsource-milestones</url>
-        </repository>
-    </repositories>
-
     <build>
         <finalName>swiftly-core</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>${project.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <encoding>${project.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <configuration>
+                    <workspace>${basedir}</workspace>
+                    <workspaceCodeStylesURL>
+                        http://svn.apache.org/repos/asf/maven/plugins/trunk/maven-eclipse-plugin/src/optional/eclipse-config/maven-styles.xml
+                    </workspaceCodeStylesURL>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>false</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <updateReleaseInfo>true</updateReleaseInfo>
                 </configuration>
             </plugin>
         </plugins>
+
     </build>
+
+
+
 </project>

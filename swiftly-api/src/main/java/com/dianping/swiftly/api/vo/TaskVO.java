@@ -29,7 +29,8 @@ public class TaskVO implements Serializable {
 
     private String            runMethod;
 
-    private String            runParameter;
+    // 字节码操作的时候 复制会出现问题，默认设置为空字符串
+    private String            runParameter     = "";
 
     private String            runTrigger;
 
