@@ -10,5 +10,10 @@
                      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
                      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <!--<bean id="beanLocator" class="com.dianping.swiftly.utils.component.SpringObjLocator"/>-->
+    <bean id="swiftlyJobOperation" class="com.dianping.swiftly.core.SwiftlyJobOperation"/>
+
+    <bean id="swiftlyScheduling" class="com.dianping.swiftly.core.SwiftlyScheduling"/>
+
+    <bean id="swiftlyTaskManager" class="com.dianping.swiftly.core.SwiftlyTaskManager"/>
+
 </beans>

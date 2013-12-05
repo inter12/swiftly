@@ -10,5 +10,18 @@
                      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
                      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-    <!--<bean id="beanLocator" class="com.dianping.swiftly.utils.component.SpringObjLocator"/>-->
+
+
+    <bean id="jobRepository" parent="parentDao">
+        <property name="proxyInterfaces" value="com.dianping.swiftly.core.Repository.dao.MySqlJobRepository" />
+        <property name="target">
+            <bean parent="activity.daoRealizeTarget">
+                <constructor-arg value="jobRepositoryDAO" />
+            </bean>
+        </property>
+    </bean>
+
+
+
+
 </beans>

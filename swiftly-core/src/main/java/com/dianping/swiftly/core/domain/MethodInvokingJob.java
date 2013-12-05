@@ -1,8 +1,7 @@
 package com.dianping.swiftly.core.domain;
 
-import com.dianping.swiftly.core.component.ApplicationContext;
-import com.dianping.swiftly.core.component.FileSystemClassLoaderProxy;
-import com.dianping.swiftly.core.component.SwiftlyClassLoader;
+import com.dianping.swiftly.core.component.ClassLoaderFactory;
+import com.dianping.swiftly.core.component.SwiftlyApplicationContext;
 import javassist.*;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
@@ -62,31 +61,40 @@ public class MethodInvokingJob implements Job {
 
                 LOGGER.warn("load class from local classpath error! , try to load from default path /data/appdata");
 
-                Collection<Object> values = ApplicationContext.getInstance().values();
+                Collection<Object> values = SwiftlyApplicationContext.getInstance().values();
                 LOGGER.info("start init!--------------");
                 for (Object value : values) {
                     LOGGER.info(value.toString());
                 }
                 LOGGER.info("end init!--------------");
 
-                SwiftlyClassLoader classLoader = (SwiftlyClassLoader) ApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+                // SwiftlyClassLoader classLoader = (SwiftlyClassLoader)
+                // SwiftlyApplicationContext.getInstance().getObjectByClazz(FileSystemClassLoaderProxy.class);
+                ClassLoader classLoader = ClassLoaderFactory.createClassLoader(this.getClass().getClassLoader());
                 targetClass = classLoader.loadClass(targetClassName);
             }
             Assert.notNull(targetClass, "can not find clazzName!");
 
             Class[] objectClazzs = null;
             Object[] objects = null;
-            if (StringUtils.isNotEmpty(targetParameter)) {
-                String[] parameter = targetParameter.split(" ");
-                if (parameter != null && parameter.length != 0) {
+            if (StringUtils.isNotBlank(targetParameter)) {
+                LOGGER.info("----------- Parameter is not blank ------------");
 
-                    objects = new Object[parameter.length];
-                    objectClazzs = new Class[parameter.length];
-                    for (int i = 0; i < parameter.length; i++) {
+                String[] parameters = targetParameter.split(" ");
+                if (parameters != null && parameters.length != 0) {
 
-                        LOGGER.debug("parameter index:" + i + " value:" + parameter[i]);
-                        objects[i] = parameter[i];
-                        objectClazzs[i] = parameter[i].getClass();
+                    objects = new Object[parameters.length];
+                    objectClazzs = new Class[parameters.length];
+                    for (int i = 0; i < parameters.length; i++) {
+
+                        LOGGER.debug("parameter index:" + i + " value:" + parameters[i]);
+                        objects[i] = parameters[i];
+                        objectClazzs[i] = parameters[i].getClass();
+                    }
+
+                    for (String parameter : parameters) {
+
+                        LOGGER.info("objectClazzs value:" + parameter);
                     }
                 }
             }
@@ -191,7 +199,6 @@ public class MethodInvokingJob implements Job {
             return false; // To change body of implemented methods use File | Settings | File Templates.
         }
 
-        @Override
         public TriggerKey getRecoveringTriggerKey() throws IllegalStateException {
             return null; // To change body of implemented methods use File | Settings | File Templates.
         }
@@ -236,7 +243,6 @@ public class MethodInvokingJob implements Job {
             return null; // To change body of implemented methods use File | Settings | File Templates.
         }
 
-        @Override
         public String getFireInstanceId() {
             return null; // To change body of implemented methods use File | Settings | File Templates.
         }

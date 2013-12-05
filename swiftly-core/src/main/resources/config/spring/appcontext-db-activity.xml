@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                     http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+                     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <bean id="activity-master" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="jdbcUrl" value="${activity-job.activity.master.jdbc.url}" />
+        <property name="user" value="${activity-job.activity.master.jdbc.username}" />
+        <property name="password" value="${activity-job.activity.master.jdbc.password}" />
+        <property name="driverClass" value="${activity-job.mysql.jdbc.driverClassName}" />
+        <property name="minPoolSize" value="${activity-job.c3p0.minSize}" />
+        <property name="maxPoolSize" value="${activity-job.c3p0.maxSize}" />
+        <property name="initialPoolSize" value="${activity-job.c3p0.initialSize}" />
+        <property name="maxIdleTime" value="300" />
+        <property name="idleConnectionTestPeriod" value="60" />
+        <property name="acquireRetryAttempts" value="3" />
+        <property name="acquireRetryDelay" value="300" />
+        <property name="maxStatements" value="0"/>
+        <property name="maxStatementsPerConnection" value="100"/>
+        <property name="numHelperThreads" value="6"/>
+        <property name="maxAdministrativeTaskTime" value="5"/>
+        <property name="preferredTestQuery" value="SELECT 1"/>
+    </bean>
+
+    <bean id="activity-slave" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="jdbcUrl" value="${activity-job.activity.slave.jdbc.url}" />
+        <property name="user" value="${activity-job.activity.slave.jdbc.username}" />
+        <property name="password" value="${activity-job.activity.slave.jdbc.password}" />
+        <property name="driverClass" value="${activity-job.mysql.jdbc.driverClassName}" />
+        <property name="minPoolSize" value="${activity-job.c3p0.minSize}" />
+        <property name="maxPoolSize" value="${activity-job.c3p0.maxSize}" />
+        <property name="initialPoolSize" value="${activity-job.c3p0.initialSize}" />
+        <property name="maxIdleTime" value="300" />
+        <property name="idleConnectionTestPeriod" value="60" />
+        <property name="acquireRetryAttempts" value="3" />
+        <property name="acquireRetryDelay" value="300" />
+        <property name="maxStatements" value="0"/>
+        <property name="maxStatementsPerConnection" value="100"/>
+        <property name="numHelperThreads" value="6"/>
+        <property name="maxAdministrativeTaskTime" value="5"/>
+        <property name="preferredTestQuery" value="SELECT 1"/>
+    </bean>
+
+    <!-- Read/Write Splitting -->
+    <bean id="activityDataSource" class="com.dianping.dpdl.sql.DPDataSource">
+        <property name="writeDS" value="activity-master"/>
+        <property name="readDS">
+            <map>
+                <entry key="activity-slave" value="10" />
+            </map>
+        </property>
+    </bean>
+
+
+
+
+</beans>

@@ -1,9 +1,7 @@
 package com.dianping.swiftly.core.domain;
 
 import com.dianping.swiftly.api.vo.TaskVO;
-import com.dianping.swiftly.core.BO.ObjectCopier;
-import com.dianping.swiftly.core.Entity.JobEntity;
-import com.dianping.swiftly.core.Repository.MySqlJobRepository;
+import com.dianping.swiftly.core.Repository.dao.MySqlJobRepository;
 import com.dianping.swiftly.core.component.JavassistHelper;
 import com.dianping.swiftly.core.component.SwiftlySchedulerException;
 import com.dianping.swiftly.core.vo.JobInfoVO;
@@ -56,8 +54,8 @@ public class JobDomain {
     public JobDomain(int jobId) {
 
         this.jobId = jobId;
-        JobEntity entity = jobRepository.loadEntity(jobId);
-        taskVO = ObjectCopier.entity2VO(entity);
+        // JobEntity entity = jobRepository.loadEntity(jobId);
+        // taskVO = ObjectCopier.entity2VO(entity);
 
     }
 
@@ -142,13 +140,13 @@ public class JobDomain {
 
             Assert.notNull(taskVO);
 
+            LOGGER.info("task info :" + taskVO.toString());
+
             // 1.组装jobDetail数据
             initJobDetail();
 
             // 2.组装trigger
             intiJobTrigger();
-
-            LOGGER.info("task info :" + taskVO.toString());
 
             return new JobInfoVO(jobDetail, trigger);
 

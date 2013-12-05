@@ -1,7 +1,8 @@
 package com.dianping.swiftly.webapp.servlet;
 
 import com.dianping.swiftly.core.SwiftlyScheduling;
-import com.dianping.swiftly.core.component.ApplicationContext;
+import com.dianping.swiftly.core.component.SwiftlyApplicationContext;
+import com.dianping.swiftly.webapp.SwiftlyInitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +25,17 @@ public class SwiftlyContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
-        ApplicationContext applicationContext = ApplicationContext.getInstance();
+        SwiftlyApplicationContext applicationContext = SwiftlyApplicationContext.getInstance();
 
-        applicationContext.putSwiftlyScheduling(SwiftlyScheduling.getInstance());
+        SwiftlyScheduling instance = SwiftlyScheduling.getInstance();
+        applicationContext.putSwiftlyScheduling(instance);
+
+        try {
+            instance.afterPropertiesSet();
+        } catch (Exception e) {
+            LOGGER.error("init scheduling error!", e);
+            throw new SwiftlyInitException("init scheduling error!", e);
+        }
 
         LOGGER.info("init Swiftly context success!");
     }
@@ -36,15 +45,15 @@ public class SwiftlyContextListener implements ServletContextListener {
 
         try {
             // 1. clean all application
-            ApplicationContext applicationContext = ApplicationContext.getInstance();
+            SwiftlyApplicationContext applicationContext = SwiftlyApplicationContext.getInstance();
 
             // 2. TODO log all running job
 
             // 3. clean scheduler
-            applicationContext.getSwiftlyScheduling().destroy();
+            // applicationContext.getSwiftlyScheduling().destroy();
 
             // last destroy
-            applicationContext.destroy();
+            // applicationContext.destroy();
 
             LOGGER.info("Destroy Swiftly context success!");
         } catch (Exception e) {

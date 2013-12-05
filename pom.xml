@@ -30,7 +30,8 @@
         <commons.collections.version>3.2.1</commons.collections.version>
         <commons.lang.version>2.6</commons.lang.version>
         <guava.version>15.0</guava.version>
-        <javassist.version>3.11.0.GA</javassist.version>
+        <javassist.version>3.12.1.GA</javassist.version>
+        <common.loggging.version>1.1.2</common.loggging.version>
     </properties>
 
     <modules>
@@ -62,6 +63,12 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${common.loggging.version}</version>
             </dependency>
 
             <dependency>

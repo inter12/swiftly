@@ -1,7 +1,7 @@
 package config.spring.test.Repository;
 
 import com.dianping.swiftly.core.Entity.JobEntity;
-import com.dianping.swiftly.core.Repository.MySqlJobRepository;
+import com.dianping.swiftly.core.Repository.dao.MySqlJobRepository;
 import com.dianping.swiftly.utils.component.PrintHelper;
 import config.spring.test.AbstractTest;
 import org.junit.Test;

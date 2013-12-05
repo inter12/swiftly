@@ -25,7 +25,8 @@ import static org.junit.Assert.assertNull;
  * @author zhaoming.xue
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:/config/spring/spring-*.xml" })
+@ContextConfiguration(locations = { "classpath*:/config/spring/common/appcontext-*.xml", "classpath*:/config/spring/*.xml",
+        "classpath*:/config/spring/local/appcontext-*.xml", "classpath*:/config/spring/test/appcontext-*.xml" })
 @Ignore
 public abstract class AbstractTest {
 

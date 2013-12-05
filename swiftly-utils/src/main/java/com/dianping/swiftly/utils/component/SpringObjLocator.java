@@ -13,14 +13,26 @@ public class SpringObjLocator {
 
     private static ApplicationContext applicationContext;
 
+    private static void init() {
+        initConifg();
+    }
+
     static {
-        applicationContext = new ClassPathXmlApplicationContext("classpath*:/config/spring/*.xml");
+        initConifg();
+    }
+
+    private static void initConifg() {
+        String[] path = new String[] { "classpath*:/config/spring/common/appcontext-dao-core.xml",
+                "classpath*:/config/spring/common/appcontext-ibatis-core.xml",
+                "classpath*:/config/spring/appcontext-*", "classpath*:/config/spring/local/appcontext-*" };
+
+        applicationContext = new ClassPathXmlApplicationContext(path);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T getBean(String name) {
         if (null == applicationContext) {
-            throw new NullPointerException("load applicationContext error !");
+            init();
         }
         return (T) applicationContext.getBean(name);
     }
@@ -29,7 +41,7 @@ public class SpringObjLocator {
     public static <T> T getBean(Class<T> clazz) {
 
         if (null == applicationContext) {
-            throw new IllegalArgumentException("load applicationContext error !");
+            init();
         }
 
         return (T) BeanFactoryUtils.beanOfType(applicationContext, clazz);

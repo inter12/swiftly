@@ -8,7 +8,10 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath*:config/spring/spring-*.xml;
+            classpath*:/config/spring/common/appcontext-*.xml,
+            classpath*:/config/spring/*.xml,
+            classpath*:/config/spring/local/appcontext-*.xml,
+            classpath*:/config/spring/test/appcontext-*.xml
         </param-value>
     </context-param>
 
@@ -61,26 +64,6 @@
     <listener>
         <listener-class>com.dianping.swiftly.webapp.servlet.SwiftlyContextListener</listener-class>
     </listener>
-
-
-    <servlet>
-        <servlet-name>QuartzInitializer</servlet-name>
-        <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
-        <init-param>
-            <param-name>shutdown-on-unload</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>config-file</param-name>
-            <param-value>quartz.properties</param-value>
-        </init-param>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>QuartzInitializer</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
 
 
     <session-config>

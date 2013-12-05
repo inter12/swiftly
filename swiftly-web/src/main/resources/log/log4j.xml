@@ -6,37 +6,37 @@
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[swiftly-webapp]%d %-5p [%c] %m%n"/>
+            <param name="ConversionPattern" value="[swiftly-web]%d %-5p [%c] %m%n"/>
         </layout>
     </appender>
 
     <appender name="appAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/swiftly-webapp/logs/app.log"/>
+        <param name="File" value="/data/applogs/swiftly-web/logs/app.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[swiftly-webapp]%d %-5p [%c] %m%n"/>
+            <param name="ConversionPattern" value="[swiftly-web]%d %-5p [%c] %m%n"/>
         </layout>
     </appender>
 
     <appender name="ibatisAppender" class="org.apache.log4j.DailyRollingFileAppender">
         <!-- <param name="Threshold" value="INFO" /> -->
-        <param name="File" value="/data/applogs/swiftly-webapp/logs/ibatis.log"/>
+        <param name="File" value="/data/applogs/swiftly-web/logs/ibatis.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[swiftly-webapp]%d %-5p [%c] %m%n"/>
+            <param name="ConversionPattern" value="[swiftly-web]%d %-5p [%c] %m%n"/>
         </layout>
     </appender>
 
     <appender name="illegalAccessAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/swiftly-webapp/logs/illegalAccess.log"/>
+        <param name="File" value="/data/applogs/swiftly-web/logs/illegalAccess.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[swiftly-webapp]%d %-5p [%c] %m%n"/>
+            <param name="ConversionPattern" value="[swiftly-web]%d %-5p [%c] %m%n"/>
         </layout>
     </appender>
 
     <appender name="illegalParameterAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/data/applogs/swiftly-webapp/logs/illegalParameter.log"/>
+        <param name="File" value="/data/applogs/swiftly-web/logs/illegalParameter.log"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[swiftly-webapp]%d %-5p [%c] %m%n"/>
+            <param name="ConversionPattern" value="[swiftly-web]%d %-5p [%c] %m%n"/>
         </layout>
     </appender>
 
@@ -45,7 +45,7 @@
         <appender-ref ref="ibatisAppender"/>
     </logger>
 
-    <logger name="com.dianping.swiftly-webapp" additivity="false">
+    <logger name="com.dianping.swiftly" additivity="false">
         <level value="DEBUG"/>
         <appender-ref ref="appAppender"/>
     </logger>
@@ -89,7 +89,7 @@
     </logger>
 
     <root>
-        <level value="WARN"/>
+        <level value="INFO"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="appAppender"/>
         <appender-ref ref="illegalParameterAppender"/>

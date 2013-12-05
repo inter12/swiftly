@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dianping.swiftly.core.Repository.MySqlJobRepository">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="jobRepositoryDAO">
 
-    <resultMap type="JobEntity" id="jobEntityResultMap">
+    <typeAlias alias="JobEntity" type="com.dianping.swiftly.core.Entity.JobEntity"/>
+
+    <resultMap class="JobEntity" id="jobEntityResultMap">
         <result property="id" column="ID"/>
         <result property="owner" column="OWNER"/>
         <result property="deployMachineIP" column="DeployMachineIP"/>
@@ -45,4 +47,4 @@
         WHERE STATUS != 5
     </select>
 
-</mapper>
+</sqlMap>

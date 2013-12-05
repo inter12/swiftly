@@ -1,5 +1,6 @@
 package com.dianping.swiftly.core;
 
+import com.dianping.swiftly.core.component.SwiftlyApplicationContext;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
@@ -7,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-import com.dianping.swiftly.core.component.ApplicationContext;
 import com.dianping.swiftly.core.component.RepositoryLocator;
 import com.dianping.swiftly.core.domain.JobDomain;
 import com.dianping.swiftly.utils.component.AssertExtended;
@@ -25,7 +25,7 @@ public class SwiftlyJobOperation implements InitializingBean {
 
     private static Logger             LOGGER             = LoggerFactory.getLogger(SwiftlyJobOperation.class);
 
-    private static ApplicationContext applicationContext = ApplicationContext.getInstance();
+    private static SwiftlyApplicationContext applicationContext = SwiftlyApplicationContext.getInstance();
 
     private Scheduler                 scheduler;
 
@@ -60,6 +60,6 @@ public class SwiftlyJobOperation implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        scheduler = (Scheduler) applicationContext.getObject(ApplicationContext.SCHEDULER);
+        scheduler = (Scheduler) applicationContext.getObject(SwiftlyApplicationContext.SCHEDULER);
     }
 }

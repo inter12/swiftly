@@ -1,6 +1,6 @@
 package com.dianping.swiftly.core.component;
 
-import com.dianping.swiftly.core.Repository.MySqlJobRepository;
+import com.dianping.swiftly.core.Repository.dao.MySqlJobRepository;
 import com.dianping.swiftly.utils.component.SpringObjLocator;
 
 /**

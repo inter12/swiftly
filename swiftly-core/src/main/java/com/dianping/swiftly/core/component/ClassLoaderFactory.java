@@ -64,17 +64,19 @@ public final class ClassLoaderFactory {
 
     }
 
-    public static void addClassPath() throws FileNotFoundException {
+    public static ClassLoader addClassPath() throws FileNotFoundException {
 
         List<URL> urlList = loadAllURL();
 
         if (CollectionUtils.isEmpty(urlList)) {
-            return;
+            return ClassLoader.getSystemClassLoader();
         }
 
         for (URL url : urlList) {
             addURL(url);
         }
+
+        return classLoader;
 
     }
 
@@ -114,12 +116,18 @@ public final class ClassLoaderFactory {
                                           InvocationTargetException {
 
         LoggerHelper.initLog();
+
+        // String[] path = new String[] { "classpath*:/config/spring/common/appcontext-dao-core.xml",
+        // "classpath*:/config/spring/common/appcontext-ibatis-core.xml",
+        // "classpath*:/config/spring/appcontext-*", "classpath*:/config/spring/local/appcontext-*" };
+        // ClassPathXmlApplicationContext application = new ClassPathXmlApplicationContext(path);
+
         final ClassLoader classLoader = ClassLoaderFactory.createClassLoader(Thread.currentThread().getContextClassLoader());
         ClassLoaderFactory.addClassPath();
 
         LOGGER.info(" --------------start--------------------- ");
         chonzhu(classLoader);
-//        method1(classLoader);
+        // method1(classLoader);
         LOGGER.info(" --------------end--------------------- ");
         // threadADD(classLoader);
 
@@ -156,11 +164,16 @@ public final class ClassLoaderFactory {
                                                         InstantiationException, IllegalAccessException,
                                                         InvocationTargetException {
         String clazzName = "com.dianping.activityjob.thirdparty.xishiqu.XishiquBaseSynHandler";
-        Class<?> aClass = classLoader.loadClass(clazzName);
-        Method hehe = aClass.getDeclaredMethod("handler");
-        Object o = aClass.newInstance();
-        Object invoke = hehe.invoke(o);
-        System.out.println(invoke);
+        Class<?> aClass = Class.forName(clazzName);
+        // Class<?> aClass = classLoader.loadClass(clazzName);
+        Method[] declaredMethods = aClass.getDeclaredMethods();
+        for (Method declaredMethod : declaredMethods) {
+            System.out.println(declaredMethod.getName());
+        }
+        // Method hehe = aClass.getDeclaredMethod("handler");
+        // Object o = aClass.newInstance();
+        // Object invoke = hehe.invoke(o);
+        // System.out.println(invoke);
     }
 
     private static void method1(ClassLoader classLoader) throws ClassNotFoundException, NoSuchMethodException,

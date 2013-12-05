@@ -49,7 +49,7 @@ Swiftly
 * swiftly-core 调度的核心包
 * swiftly-extend 外部扩展包
 * swiftly-utils 项目的一些工具包，会被其它包依赖
-* swiftly-webapp 控制中心的运行包
+* swiftly-web 控制中心的运行包
 
 ## 五、主要依赖的外部包
 * spring

@@ -11,12 +11,13 @@
 
     <groupId>com.dianping.swiftly</groupId>
     <artifactId>swiftly-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>swiftly-core</name>
 
     <properties>
         <java.version>1.6</java.version>
+        <env>dev</env>
     </properties>
 
     <dependencies>
@@ -56,17 +57,17 @@
             <artifactId>spring-test</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.2.0</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.mybatis</groupId>-->
+        <!--<artifactId>mybatis</artifactId>-->
+        <!--<version>3.2.0</version>-->
+        <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis-spring</artifactId>
-            <version>1.1.0</version>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.mybatis</groupId>-->
+        <!--<artifactId>mybatis-spring</artifactId>-->
+        <!--<version>1.1.0</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -100,11 +101,10 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>commons-logging</groupId>-->
-            <!--<artifactId>commons-logging</artifactId>-->
-            <!--<version>1.1.2</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
@@ -132,6 +132,7 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.2.1</version>
+            <!--<scope>provided</scope>-->
         </dependency>
 
         <dependency>
@@ -144,6 +145,39 @@
             <artifactId>javassist</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.dianping</groupId>
+            <artifactId>dp-common-service</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dianping.lion</groupId>
+            <artifactId>lion-client</artifactId>
+            <version>0.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dianping.platform</groupId>
+            <artifactId>platform-sdk</artifactId>
+            <version>0.0.6</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.quartz-scheduler</groupId>
+                    <artifactId>quartz</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.dianping.lion</groupId>
+            <artifactId>lion-${env}</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -208,7 +242,6 @@
         </plugins>
 
     </build>
-
 
 
 </project>

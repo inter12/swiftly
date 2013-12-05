@@ -1,14 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 
-<configuration>
+<sqlMapConfig>
+    <settings cacheModelsEnabled="true" enhancementEnabled="false"
+              lazyLoadingEnabled="false" maxRequests="3000" maxSessions="3000"
+              maxTransactions="3000" useStatementNamespaces="true" />
 
-    <typeAliases>
-        <typeAlias alias="JobEntity" type="com.dianping.swiftly.core.Entity.JobEntity"/>
-    </typeAliases>
-
-    <mappers>
-        <mapper resource="config/sqlmap/task-respository.xml"/>
-    </mappers>
-</configuration>
+    <sqlMap resource="config/sqlmap/task-respository.xml"/>
+</sqlMapConfig>

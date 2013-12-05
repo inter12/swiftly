@@ -1,25 +1,27 @@
 package com.dianping.swiftly.core;
 
-import com.dianping.swiftly.core.component.ApplicationContext;
 import com.dianping.swiftly.core.component.ConfigurationManager;
 import com.dianping.swiftly.core.component.RepositoryLocator;
+import com.dianping.swiftly.core.component.SwiftlyApplicationContext;
 import com.dianping.swiftly.core.domain.TaskDomain;
 import com.dianping.swiftly.utils.component.LoggerHelper;
-import com.dianping.swiftly.utils.component.SpringHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
-import org.quartz.impl.SchedulerRepository;
 import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.Assert;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -80,7 +82,7 @@ public class SwiftlyScheduling {
     private boolean                           exposeSchedulerInRepository = true;
 
     // 全局的上下文环境
-    private ApplicationContext                applicationContext;
+    private SwiftlyApplicationContext         applicationContext;
 
     private TaskMonitor                       taskMonitor;
 
@@ -98,10 +100,10 @@ public class SwiftlyScheduling {
         taskDomain.initScheduler();
     }
 
-    private void initSysVariable() {
+    private void initSysVariable() throws FileNotFoundException {
 
         if (applicationContext == null) {
-            applicationContext = ApplicationContext.getInstance();
+            applicationContext = SwiftlyApplicationContext.getInstance();
         }
 
         applicationContext.putSwiftlyScheduling(this);
@@ -124,6 +126,7 @@ public class SwiftlyScheduling {
         } else {
             applicationContext.putConfigurationManager(configurationManger);
         }
+
     }
 
     private void addListener() {
@@ -159,42 +162,46 @@ public class SwiftlyScheduling {
 
     protected void createScheduler() throws SchedulerException {
 
-        SchedulerFactory schedulerFactory = (SchedulerFactory) BeanUtils.instantiateClass(this.schedulerFactoryClazz);
+        // SchedulerFactory schedulerFactory = (SchedulerFactory)
+        // BeanUtils.instantiateClass(this.schedulerFactoryClazz);
 
         // TODO 线程加载机制 还需要改下
-        Thread currentThread = Thread.currentThread();
-        ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
-        boolean overrideClassLoader = (configurationManger != null && !configurationManger.getClass().getClassLoader().equals(threadContextClassLoader));
-        if (overrideClassLoader) {
-            currentThread.setContextClassLoader(configurationManger.getClass().getClassLoader());
-        }
+        // Thread currentThread = Thread.currentThread();
+        // ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+        // boolean overrideClassLoader = (configurationManger != null &&
+        // !configurationManger.getClass().getClassLoader().equals(threadContextClassLoader));
+        // if (overrideClassLoader) {
+        // currentThread.setContextClassLoader(configurationManger.getClass().getClassLoader());
+        // }
         try {
-            SchedulerRepository repository = SchedulerRepository.getInstance();
+            // SchedulerRepository repository = SchedulerRepository.getInstance();
 
-            synchronized (repository) {
+            // synchronized (repository) {
 
-                Scheduler existingScheduler = (schedulerName != null ? repository.lookup(schedulerName) : null);
-                Scheduler newScheduler = schedulerFactory.getScheduler();
-                if (newScheduler == existingScheduler) {
-                    throw new IllegalStateException(
-                                                    "Active Scheduler of name '"
-                                                            + schedulerName
-                                                            + "' already registered "
-                                                            + "in Quartz SchedulerRepository. Cannot create a new Spring-managed Scheduler of the same name!");
-                }
-                if (!this.exposeSchedulerInRepository) {
-                    // Need to remove it in this case, since Quartz shares the Scheduler instance by default!
-                    repository.remove(newScheduler.getSchedulerName());
-                }
-                scheduler = newScheduler;
+            // Scheduler existingScheduler = (schedulerName != null ? repository.lookup(schedulerName) : null);
+            // Scheduler newScheduler = schedulerFactory.getScheduler();
+            // if (newScheduler == existingScheduler) {
+            // throw new IllegalStateException(
+            // "Active Scheduler of name '"
+            // + schedulerName
+            // + "' already registered "
+            // + "in Quartz SchedulerRepository. Cannot create a new Spring-managed Scheduler of the same name!");
+            // }
+            // if (!this.exposeSchedulerInRepository) {
+            // // Need to remove it in this case, since Quartz shares the Scheduler instance by default!
+            // repository.remove(newScheduler.getSchedulerName());
+            // }
+            // scheduler = ExtendStdSchedulerFactory.getDefaultScheduler();
+            scheduler = StdSchedulerFactory.getDefaultScheduler();
+            // scheduler = schedulerFactory.get;
 
-                applicationContext.put(ApplicationContext.SCHEDULER, scheduler);
-            }
+            applicationContext.put(SwiftlyApplicationContext.SCHEDULER, scheduler);
+            // }
         } finally {
-            if (overrideClassLoader) {
-                // Reset original thread context ClassLoader.
-                currentThread.setContextClassLoader(threadContextClassLoader);
-            }
+            // if (overrideClassLoader) {
+            // // Reset original thread context ClassLoader.
+            // currentThread.setContextClassLoader(threadContextClassLoader);
+            // }
         }
     }
 
@@ -264,12 +271,31 @@ public class SwiftlyScheduling {
 
         LoggerHelper.initLog();
 
-        String[] path = { "classpath*:/config/spring/spring-*.xml" };
-        org.springframework.context.ApplicationContext applicationContext1 = SpringHelper.loadSpringConfig(path);
-        RepositoryLocator.setApplicationContext(applicationContext1);
+        String[] path = new String[] { "classpath*:/config/spring/common/appcontext-*.xml",
+                "classpath*:/config/spring/*.xml", "classpath*:/config/spring/local/appcontext-*.xml",
+                "classpath*:/config/spring/test/appcontext-*.xml" };
+
+        // ClassLoader classLoader =
+        // ClassLoaderFactory.createClassLoader(Thread.currentThread().getContextClassLoader());
+        // ClassLoader classLoader = ClassLoaderFactory.addClassPath();
+        // Class<?> aClass = classLoader.loadClass("com.dianping.activityjob.thirdparty.xishiqu.XishiquBaseSynHandler");
+        // System.out.println("name1----------:" + aClass.getName());
+
+//        final ClassLoader classLoader = ClassLoaderFactory.createClassLoader(Thread.currentThread().getContextClassLoader());
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(path) {
+
+//            protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader) {
+//                super.initBeanDefinitionReader(reader);
+//                reader.setValidationMode(XmlBeanDefinitionReader.VALIDATION_NONE);
+//                reader.setBeanClassLoader(classLoader);
+//                setClassLoader(classLoader);
+//            }
+        };
 
         SwiftlyScheduling scheduling = SwiftlyScheduling.getInstance();
         scheduling.afterPropertiesSet();
+
+        TimeUnit.SECONDS.sleep(20000);
 
     }
 
@@ -284,7 +310,9 @@ public class SwiftlyScheduling {
         }
     }
 
+    // @Override
     public void afterPropertiesSet() throws Exception {
+
         if (!isInit) {
 
             initLock.lock();
