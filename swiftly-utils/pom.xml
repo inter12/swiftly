@@ -11,7 +11,7 @@
 
     <groupId>com.dianping.swiftly</groupId>
     <artifactId>swiftly-utils</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>swiftly-utils</name>
 
@@ -53,9 +53,19 @@
         </dependency>
 
         <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
         </dependency>
 
     </dependencies>

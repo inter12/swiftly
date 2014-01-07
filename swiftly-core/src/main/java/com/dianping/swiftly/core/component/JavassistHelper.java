@@ -129,8 +129,8 @@ public class JavassistHelper {
 
         ClassPool classPool = ClassPool.getDefault();
 
-        CtClass newClazz = classPool.getAndRename("com.dianping.swiftly.core.BO.TaskBO",
-                                                  "com.dianping.swiftly.core.BO.TaskBO$new");
+        CtClass newClazz = classPool.getAndRename("com.dianping.swiftly.core.bo.TaskBO",
+                                                  "com.dianping.swiftly.core.bo.TaskBO$new");
         CtField loggerField = new CtField(classPool.get(LOGGER_CLAZZ), LOGGER_FIELD, newClazz);
         CtField.Initializer getLogger = CtField.Initializer.byCall(classPool.get(LOGGER_CLAZZ), LOGGER_METHOD,
                                                                    new String[] { newClazz.toString() });
@@ -240,7 +240,7 @@ public class JavassistHelper {
 
     private static void testN() throws Exception {
         ClassPool pool = ClassPool.getDefault();
-        CtClass ctClass = pool.get("com.dianping.swiftly.core.BO.TaskBO");
+        CtClass ctClass = pool.get("com.dianping.swiftly.core.bo.TaskBO");
         CtField f = new CtField(pool.get(STRING), TARGET_CLASS_NAME, ctClass);
         f.setModifiers(Modifier.PRIVATE);
 

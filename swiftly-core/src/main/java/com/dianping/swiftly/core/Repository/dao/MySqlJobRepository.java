@@ -3,7 +3,7 @@ package com.dianping.swiftly.core.Repository.dao;
 import com.dianping.avatar.dao.GenericDao;
 import com.dianping.avatar.dao.annotation.DAOAction;
 import com.dianping.avatar.dao.annotation.DAOActionType;
-import com.dianping.swiftly.core.Entity.JobEntity;
+import com.dianping.swiftly.core.entity.JobEntity;
 
 import java.util.List;
 

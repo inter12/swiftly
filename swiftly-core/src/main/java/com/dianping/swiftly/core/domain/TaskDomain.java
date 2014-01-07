@@ -1,8 +1,8 @@
 package com.dianping.swiftly.core.domain;
 
 import com.dianping.swiftly.api.vo.TaskVO;
-import com.dianping.swiftly.core.BO.ObjectCopier;
-import com.dianping.swiftly.core.Entity.JobEntity;
+import com.dianping.swiftly.core.bo.ObjectCopier;
+import com.dianping.swiftly.core.entity.JobEntity;
 import com.dianping.swiftly.core.Repository.dao.MySqlJobRepository;
 import com.dianping.swiftly.core.component.RepositoryLocator;
 import com.dianping.swiftly.core.vo.JobInfoVO;

@@ -1,6 +1,6 @@
 package com.dianping.swiftly.core.component;
 
-import com.dianping.swiftly.core.BO.TaskBO;
+import com.dianping.swiftly.core.bo.TaskBO;
 import com.dianping.swiftly.core.listener.CostTimeJobListener;
 import com.dianping.swiftly.utils.component.LoggerHelper;
 import org.slf4j.Logger;
@@ -138,7 +138,7 @@ public class FileSystemClassLoaderProxy implements SwiftlyClassLoader {
     private static void test() throws Exception {
         FileSystemClassLoaderProxy fileSystemClassLoader = new FileSystemClassLoaderProxy("/tmp/jar");
 
-        Class<?> aClass = fileSystemClassLoader.loadClass("com.dianping.swiftly.core.BO.TaskBO");
+        Class<?> aClass = fileSystemClassLoader.loadClass("com.dianping.swiftly.core.bo.TaskBO");
         TaskBO instantiate = (TaskBO) BeanUtils.instantiate(aClass);
 
         // Method getName = aClass.getMethod("getName");

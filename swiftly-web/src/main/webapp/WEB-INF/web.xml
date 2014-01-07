@@ -62,7 +62,7 @@
     </listener>
 
     <listener>
-        <listener-class>com.dianping.swiftly.webapp.servlet.SwiftlyContextListener</listener-class>
+        <listener-class>com.dianping.swiftly.extend.servlet.SwiftlyContextListener</listener-class>
     </listener>
 
 
