@@ -19,9 +19,8 @@ public class Processor3 extends TemplateProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(Processor3.class);
 
-    @Override
-    protected void nameConfig() {
-        super.name = "p3";
+    protected Processor3(String name) {
+        super(name);
     }
 
     @Override

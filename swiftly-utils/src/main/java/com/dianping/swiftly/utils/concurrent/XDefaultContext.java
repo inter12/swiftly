@@ -7,7 +7,9 @@ public class XDefaultContext {
 
     static ThreadLocal<XDefaultContext> contexts   = new ThreadLocal<XDefaultContext>();
 
-    public static final String          USER_ID    = "userId";
+    private XConfig                     xConfig;
+
+    private static final Object         configSync = new Object();
 
     private Map<String, Object>         paramMap   = new HashMap<String, Object>();
 
@@ -15,17 +17,11 @@ public class XDefaultContext {
 
     private List<XProcessor>            processors = new ArrayList<XProcessor>();
 
-    public XDefaultContext(int userId) {
-        paramMap.put(USER_ID, userId);
-        setContext(this);
-    }
-
     public XDefaultContext() {
     }
 
-    public Integer getUserId() {
-        Object userId = paramMap.get(USER_ID);
-        return null == userId ? null : (Integer) userId;
+    public XDefaultContext(XConfig xConfig) {
+        this.xConfig = xConfig;
     }
 
     public static XDefaultContext getContext() {
@@ -71,7 +67,28 @@ public class XDefaultContext {
 
         return resultMap.entrySet();
     }
-    
-    
 
+    public Map<String, Object> result() {
+        return resultMap;
+    }
+
+    public Object getReuslt(String key) {
+        return resultMap.get(key);
+    }
+
+    public XConfig getxConfig() {
+
+        if (xConfig == null) {
+            synchronized (configSync) {
+                if (xConfig == null) {
+                    return new XConfig();
+                }
+            }
+        }
+        return xConfig;
+    }
+
+    public void setxConfig(XConfig xConfig) {
+        this.xConfig = xConfig;
+    }
 }

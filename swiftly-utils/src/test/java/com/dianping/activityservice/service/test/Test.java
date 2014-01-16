@@ -1,9 +1,7 @@
 package com.dianping.activityservice.service.test;
 
 import com.dianping.swiftly.utils.component.LoggerHelper;
-import com.dianping.swiftly.utils.component.SpringHelper;
 import com.dianping.swiftly.utils.concurrent.*;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Map;
 import java.util.Set;
@@ -22,22 +20,23 @@ public class Test {
     public static void main(String[] args) throws Exception {
         LoggerHelper.initLog();
 
-        String[] path = new String[] { "classpath*:config/spring/local/appcontext-*.xml" };
+        // String[] path = new String[] { "classpath*:config/spring/local/appcontext-*.xml" };
 
-        ApplicationContext applicationContext = SpringHelper.loadSpringConfig(path);
-//        CommonServiceLocator locator = new CommonServiceLocator();
-//        locator.setApplicationContext(applicationContext);
+        // ApplicationContext applicationContext = SpringHelper.loadSpringConfig(path);
+        // CommonServiceLocator locator = new CommonServiceLocator();
+        // locator.setApplicationContext(applicationContext);
         // applicationContext.getBean("CommonThreadPool");
 
-        Object commonThreadPool = CommonServiceLocator.getBean("CommonThreadPool");
+        // Object commonThreadPool = CommonServiceLocator.getBean("CommonThreadPool");
 
-        XDefaultContext context = new XDefaultContext();
+        XDefaultContext context = new XDefaultContext(XConfigBuilder.newXConfig().build());
+        // context.setxConfig(XConfigBuilder.newXConfig().build());
 
         XStep first = new DefaultStep("first");
-        first.addProcessor(new Processor1()).addProcessor(new Processor2());
+        first.addProcessor(new Processor1("p1")).addProcessor(new Processor2("p2"));
 
         XStep second = new DefaultStep("second");
-        second.addProcessor(new Processor3());
+        second.addProcessor(new Processor3("p3"));
 
         first.setNextStep(second);
 

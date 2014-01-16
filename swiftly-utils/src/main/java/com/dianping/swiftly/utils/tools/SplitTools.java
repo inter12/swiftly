@@ -18,6 +18,15 @@ import java.util.List;
  */
 public class SplitTools {
 
+    /**
+     * 集合分割 @Deprecated 推荐使用guava的Lists
+     * 
+     * @param userIds
+     * @param count
+     * @param <T>
+     * @return
+     */
+    @Deprecated
     public static <T> List<List<T>> splitUser2List(List<T> userIds, int count) {
 
         if (CollectionUtils.isEmpty(userIds)) {

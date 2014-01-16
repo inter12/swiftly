@@ -2,16 +2,15 @@ package com.dianping.swiftly.utils.concurrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
 
 public class XManager {
 
-    private static Logger          LOGGER                 = LoggerFactory.getLogger(XManager.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(XManager.class);
 
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor = CommonServiceLocator.getThreadPools();
+    // private ThreadPoolTaskExecutor threadPoolTaskExecutor = CommonServiceLocator.getThreadPools();
 
     public void execute(final XDefaultContext context) throws Exception {
 
@@ -44,7 +43,7 @@ public class XManager {
         Iterator<XProcessor> iterator = context.processorsIterator();
 
         DefaultStep step = new DefaultStep();
-        step.setWaitTimeSwitch(true);
+        step.setWaitTimeSwitch(true); // 不需要关注超时时间
 
         while (iterator.hasNext()) {
 
@@ -81,18 +80,4 @@ public class XManager {
         }
     }
 
-    private int getStepSize(XStep step) {
-
-        if (step == null) {
-            return 0;
-        }
-        int size = 1;
-        XStep temp = step.getNextStep();
-        while (temp != null) {
-            size++;
-            temp = step.getNextStep();
-        }
-
-        return size; // To change body of created methods use File | Settings | File Templates.
-    }
 }

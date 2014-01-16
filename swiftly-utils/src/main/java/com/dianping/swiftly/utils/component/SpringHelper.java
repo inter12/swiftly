@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *  User: zhaoming
  *  Date: 13-12-4
  *  Time: 上午11:18
- * 
+ *  简化加载spring的配置文件
  * </pre>
  */
 public class SpringHelper {

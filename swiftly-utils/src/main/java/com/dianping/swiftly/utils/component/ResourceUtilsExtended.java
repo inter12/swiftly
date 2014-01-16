@@ -18,6 +18,13 @@ import java.util.Properties;
  */
 public class ResourceUtilsExtended extends ResourceUtils {
 
+    /**
+     * 根据路径将文件转化为properties格式
+     * 
+     * @param path 文件路径
+     * @return
+     * @throws IOException
+     */
     public static Properties getProperties(String path) throws IOException {
         Assert.notNull(path, "Resource location must not be null");
 

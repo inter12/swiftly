@@ -7,12 +7,16 @@ public abstract class TemplateProcessor implements XProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(TemplateProcessor.class);
 
+    // 配置各个子模块的结果集
     protected String      name;
+
+    protected TemplateProcessor(String name) {
+        this.name = name;
+    }
 
     public void handle(XDefaultContext context) {
         Object doWork = null;
         try {
-            nameConfig();
             doWork = doWork(context);
         } catch (Exception e) {
 
@@ -29,14 +33,9 @@ public abstract class TemplateProcessor implements XProcessor {
      * 
      * @param e
      */
-    public void doExeption(Exception e) {
+    protected void doExeption(Exception e) {
 
     }
-
-    /**
-     * 配置各个子模块的结果集
-     */
-    protected abstract void nameConfig();
 
     protected abstract Object doWork(XDefaultContext context);
 

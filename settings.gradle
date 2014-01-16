@@ -1,0 +1,1 @@
+include 'swiftly-core', 'swiftly-utils','swiftly-api','swiftly-extend','swiftly-communication','swiftly-agent','swiftly-web'

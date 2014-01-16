@@ -2,11 +2,12 @@ package com.dianping.swiftly.utils.concurrent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,19 +21,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class DefaultStep implements XStep {
 
-    private static Logger                 logger                 = LoggerFactory.getLogger(DefaultStep.class);
+    private static Logger    logger      = LoggerFactory.getLogger(DefaultStep.class);
 
-    private static final int              MAX_WAIT_TIME          = 5;
+    private int              maxWaitTime = 5;
 
-    private boolean                       waitTimeSwitch;
+    private boolean          waitTimeSwitch;
 
-    private String                        name                   = "defaultStep";
+    private String           name        = "defaultStep";
 
-    private XStep                         nextStep;
+    private XStep            nextStep;
 
-    private List<XProcessor>              processList            = new ArrayList<XProcessor>();
-
-    private static ThreadPoolTaskExecutor threadPoolTaskExecutor = CommonServiceLocator.getThreadPools();
+    private List<XProcessor> processList = new ArrayList<XProcessor>();
 
     public DefaultStep(String name) {
         this.name = name;
@@ -48,13 +47,16 @@ public class DefaultStep implements XStep {
             return;
         }
 
+        final ThreadPoolExecutor threadPoolExecutor = context.getxConfig().getThreadPoolExecutor();
+        Assert.notNull(threadPoolExecutor, "threadPoolExecutor is null!");
+
         final CountDownLatch countDownLatch = new CountDownLatch(processList.size());
 
         for (XProcessor lProcessor : processList) {
 
             final XProcessor temp = lProcessor;
 
-            threadPoolTaskExecutor.execute(new Runnable() {
+            threadPoolExecutor.execute(new Runnable() {
 
                 @Override
                 public void run() {
@@ -73,7 +75,7 @@ public class DefaultStep implements XStep {
         if (waitTimeSwitch) {
             countDownLatch.await();
         } else {
-            countDownLatch.await(MAX_WAIT_TIME, TimeUnit.SECONDS);
+            countDownLatch.await(maxWaitTime, TimeUnit.SECONDS);
         }
 
     }
@@ -102,5 +104,9 @@ public class DefaultStep implements XStep {
 
     public void setWaitTimeSwitch(boolean waitTimeSwitch) {
         this.waitTimeSwitch = waitTimeSwitch;
+    }
+
+    public void setMaxWaitTime(int maxWaitTime) {
+        this.maxWaitTime = maxWaitTime;
     }
 }

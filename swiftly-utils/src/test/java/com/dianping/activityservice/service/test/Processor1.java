@@ -18,10 +18,8 @@ public class Processor1 extends TemplateProcessor {
 
     private static Logger logger = LoggerFactory.getLogger(Processor1.class);
 
-    @Override
-    protected void nameConfig() {
-        // To change body of implemented methods use File | Settings | File Templates.
-        super.name = "p1";
+    protected Processor1(String name) {
+        super(name);
     }
 
     @Override
