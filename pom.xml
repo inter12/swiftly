@@ -27,7 +27,7 @@
         <log4j.version>1.2.14</log4j.version>
         <junit.version>4.11</junit.version>
         <cglib.version>2.2</cglib.version>
-        <commons.collections.version>3.2.1</commons.collections.version>
+        <commons.collections.version>3.2.2</commons.collections.version>
         <commons.lang.version>2.6</commons.lang.version>
         <guava.version>15.0</guava.version>
         <javassist.version>3.12.1.GA</javassist.version>
